@@ -509,7 +509,7 @@ const FiltersSheet = ({
                     checked={columnVisibility[column.id] !== false}
                     onCheckedChange={(checked) =>
                       setColumnVisibility({
-                        ...columnVisibility,
+                        ...(columnVisibility as any),
                         [column.id]: checked,
                       })
                     }
