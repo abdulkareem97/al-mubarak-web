@@ -27,7 +27,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  userRole?: "ADMIN" | "staff" | "client";
+  userRole?: "ADMIN" | "STAFF" | "client";
 }
 
 interface TabConfig {
@@ -89,6 +89,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           icon: Compass,
           href: "/dashboard/payment-reminders",
         },
+        {
+          id: "user-management",
+          name: "User Management",
+          icon: Compass,
+          href: "/dashboard/user",
+        },
         // {
         //   id: "users",
         //   name: "User Management",
@@ -115,25 +121,40 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         // },
       ],
     },
-    staff: {
+    STAFF: {
       name: "Staff Portal",
       icon: Briefcase,
       color: "bg-blue-500",
       tabs: [
-        { id: "overview", name: "Dashboard", icon: Home, href: "/staff" },
-        { id: "tasks", name: "Tasks", icon: UserCheck, href: "/staff/tasks" },
         {
-          id: "schedule",
-          name: "Schedule",
-          icon: Calendar,
-          href: "/staff/schedule",
+          id: "overview",
+          name: "Overview",
+          icon: Home,
+          href: "/dashboard/overview",
         },
-        { id: "clients", name: "Clients", icon: Users, href: "/staff/clients" },
         {
-          id: "reports",
-          name: "Reports",
-          icon: FileText,
-          href: "/staff/reports",
+          id: "Memebrs",
+          name: "Members",
+          icon: Users,
+          href: "/dashboard/members",
+        },
+        {
+          id: "tours-package",
+          name: "Tour Packages",
+          icon: Compass,
+          href: "/dashboard/tour-packages",
+        },
+        {
+          id: "tours-member",
+          name: "Tour Members",
+          icon: Compass,
+          href: "/dashboard/tour-member",
+        },
+        {
+          id: "payment-remainders",
+          name: "Payment Remainders",
+          icon: Compass,
+          href: "/dashboard/payment-reminders",
         },
       ],
     },
@@ -317,7 +338,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               {/* Header Actions */}
               <div className="flex items-center space-x-4">
                 {/* Search - Desktop only */}
-                <div className="hidden md:block">
+                {/* <div className="hidden md:block">
                   <div className="relative">
                     <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                     <input
@@ -326,21 +347,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                       className="pl-9 pr-4 py-2 w-64 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                     />
                   </div>
-                </div>
+                </div> */}
 
                 {/* Notifications */}
-                <button className="relative text-gray-500 hover:text-gray-700 p-2 rounded-md hover:bg-gray-100">
+                {/* <button className="relative text-gray-500 hover:text-gray-700 p-2 rounded-md hover:bg-gray-100">
                   <Bell className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                </button> */}
 
                 {/* Profile Menu */}
                 <div className="flex items-center space-x-3">
                   <div className="hidden sm:block text-right">
                     <p className="text-sm font-medium text-gray-900 capitalize">
-                      {userRole} User
+                      {userRole} USER
                     </p>
-                    <p className="text-xs text-gray-500">user@example.com</p>
+                    {/* <p className="text-xs text-gray-500">{userRole.}</p> */}
                   </div>
                   <div
                     className={`w-9 h-9 ${currentConfig.color} rounded-full flex items-center justify-center shadow-lg`}

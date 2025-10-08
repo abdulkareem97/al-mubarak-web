@@ -104,6 +104,13 @@ export function MembersTable() {
 
   const columns: ColumnDef<Member>[] = [
     {
+      accessorKey: "id",
+      header: "Member Id",
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("id")}</div>
+      ),
+    },
+    {
       accessorKey: "name",
       header: "Name",
       cell: ({ row }) => (

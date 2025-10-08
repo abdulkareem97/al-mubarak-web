@@ -203,7 +203,7 @@ export function TourPackageView({ id }: TourPackageViewProps) {
           </Card>
 
           {/* Quick Actions */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
@@ -227,7 +227,7 @@ export function TourPackageView({ id }: TourPackageViewProps) {
                 Duplicate Package
               </Button>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </div>
       <div className="space-y-6 p-6">

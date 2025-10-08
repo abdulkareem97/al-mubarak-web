@@ -3,6 +3,7 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
+import { Toaster } from "sonner";
 
 export default function AdminLayout({
   children,
@@ -19,6 +20,7 @@ export default function AdminLayout({
   return (
     <div>
       {/* <ProtectedRoute> */}
+      <Toaster />
       <DashboardLayout userRole={user?.role as any}>{children}</DashboardLayout>
       {/* </ProtectedRoute> */}
     </div>

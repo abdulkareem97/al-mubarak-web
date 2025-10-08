@@ -87,7 +87,7 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
   tourMember,
   onSuccess,
 }) => {
-  // console.log("tourpackage in memeber", tourPackage);
+  console.log("tourpackage in memeber", tourPackage);
 
   const [showMemberDialog, setShowMemberDialog] = useState(false);
   const [discountType, setDiscountType] = useState<"percentage" | "amount">(
@@ -260,10 +260,11 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
               {tourMember ? "Edit" : "Add"} Tour Members
             </DialogTitle>
           </DialogHeader>
-
-          <TourPackageSearchForm
-            setSelectedTourPackage={setSelectedTourPackage}
-          />
+          {!tourPackage && (
+            <TourPackageSearchForm
+              setSelectedTourPackage={setSelectedTourPackage}
+            />
+          )}
 
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
