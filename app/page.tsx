@@ -1,7 +1,18 @@
-import React from "react";
+"use client";
+import { useAuth } from "@/hooks/useAuth";
+import React, { useEffect } from "react";
 
-const page = () => {
-  return <div></div>;
+const Page = () => {
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      window.location.href = "/login";
+    } else {
+      window.location.href = "/dashboard/overview";
+    }
+  }, [user]);
+  return <div>Home Page</div>;
 };
 
-export default page;
+export default Page;
