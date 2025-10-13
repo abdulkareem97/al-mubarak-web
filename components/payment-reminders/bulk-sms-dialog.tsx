@@ -129,7 +129,7 @@ export function BulkSmsDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
             {/* Message Composition */}
             <div className="space-y-4">

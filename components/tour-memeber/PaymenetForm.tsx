@@ -152,13 +152,12 @@ const PaymentFormDialog: React.FC<PaymentFormDialogProps> = ({
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        ₹
                         <Input
                           type="number"
                           min="1"
                           step="0.01"
                           placeholder="0"
-                          className="pl-9"
+                          className="pl-3"
                           {...field}
                           onChange={(e) =>
                             field.onChange(parseFloat(e.target.value) || 0)
@@ -198,7 +197,7 @@ const PaymentFormDialog: React.FC<PaymentFormDialogProps> = ({
                   </FormItem>
                 )}
               />
-
+              {/* 
               <FormField
                 control={form.control}
                 name="status"
@@ -223,7 +222,7 @@ const PaymentFormDialog: React.FC<PaymentFormDialogProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={form.control}

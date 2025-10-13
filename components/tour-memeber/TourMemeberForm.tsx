@@ -78,6 +78,7 @@ interface TourMemberFormProps {
   tourPackage?: TourPackage;
   tourMember?: TourMember | null;
   onSuccess?: () => void;
+  status?: string;
 }
 
 const TourMemberForm: React.FC<TourMemberFormProps> = ({
@@ -86,6 +87,7 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
   tourPackage,
   tourMember,
   onSuccess,
+  status,
 }) => {
   console.log("tourpackage in memeber", tourPackage);
 
@@ -173,7 +175,7 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
           tourMember?.packagePrice || selectedTourPackage?.tourPrice || 0,
         memberCount: tourMember?.memberCount || 0,
         netCost: tourMember?.netCost || selectedTourPackage?.tourPrice || 0,
-        discountValue: 0,
+        discountValue: tourMember?.discount || 0,
         discount: tourMember?.discount || 0,
         totalCost: tourMember?.totalCost || 0,
         paymentType: tourMember?.paymentType || "ONE_TIME",
@@ -222,6 +224,7 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
     const payload = {
       ...data,
       memberIds: data.memberIds,
+      status: status || "BOOKED",
     };
 
     if (tourMember) {

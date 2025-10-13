@@ -81,7 +81,7 @@ export function IndividualSmsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -92,7 +92,7 @@ export function IndividualSmsDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-auto">
           {/* Member Information */}
           <div className="bg-muted p-4 rounded-lg">
             <div className="grid grid-cols-2 gap-4">

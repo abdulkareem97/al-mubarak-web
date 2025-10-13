@@ -1,3 +1,4 @@
+"use client";
 // File: /components/tour-members/TourMemberTable.tsx
 import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -62,6 +63,8 @@ import { cn } from "@/lib/utils";
 import { tourMemberApi } from "@/lib/api/tour-memeber";
 import { TourMember } from "@/types/tour-member";
 import TourMemberDetailDialog from "./TourMemberDetailDialog";
+import { useRouter } from "next/navigation";
+import { stat } from "fs";
 
 // Payment Status Badge Component
 const PaymentStatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -89,12 +92,15 @@ const PaymentStatusBadge: React.FC<{ status: string }> = ({ status }) => {
 interface TourMemberTableProps {
   onEdit?: (tourMember: TourMember) => void;
   tourPackageId?: string;
+  status?: string;
 }
 
 const TourMemberTable: React.FC<TourMemberTableProps> = ({
   onEdit,
   tourPackageId,
+  status = "BOOKED",
 }) => {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -113,8 +119,8 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["tourMembers"],
-    queryFn: () => tourMemberApi.getAll(tourPackageId),
+    queryKey: ["tourMembers", status],
+    queryFn: () => tourMemberApi.getAll(tourPackageId, status),
     staleTime: 0,
   });
 
@@ -170,26 +176,32 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
           </span>
         ),
       },
-      {
-        accessorKey: "paymentStatus",
-        header: "Payment Status",
-        cell: ({ row }) => (
-          <PaymentStatusBadge status={row.getValue("paymentStatus")} />
-        ),
-      },
-      {
-        accessorKey: "paymentType",
-        header: "Payment Type",
-        cell: ({ row }) => (
-          <Badge
-            variant={
-              row.getValue("paymentType") === "FULL" ? "default" : "outline"
-            }
-          >
-            {row.getValue("paymentType")}
-          </Badge>
-        ),
-      },
+      ...(status === "BOOKED"
+        ? [
+            {
+              accessorKey: "paymentStatus",
+              header: "Payment Status",
+              cell: ({ row }) => (
+                <PaymentStatusBadge status={row.getValue("paymentStatus")} />
+              ),
+            },
+            {
+              accessorKey: "paymentType",
+              header: "Payment Type",
+              cell: ({ row }) => (
+                <Badge
+                  variant={
+                    row.getValue("paymentType") === "FULL"
+                      ? "default"
+                      : "outline"
+                  }
+                >
+                  {row.getValue("paymentType")}
+                </Badge>
+              ),
+            },
+          ]
+        : []),
       {
         accessorKey: "createdAt",
         header: "Created At",
@@ -223,15 +235,36 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
                   <Eye className="mr-2 h-4 w-4" />
                   View Details
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onEdit?.(tourMember)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
+                <DropdownMenuItem
+                  onClick={() => {
+                    router.push(
+                      `/dashboard/tour-member/${tourMember.id}/print`
+                    );
+                  }}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Print Details
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </DropdownMenuItem>
+                {status === "BOOKED" ? (
+                  <>
+                    <DropdownMenuItem onClick={() => onEdit?.(tourMember)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Download className="mr-2 h-4 w-4" />
+                      Export
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => onEdit?.(tourMember)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Change Status To Booked
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-red-600"
@@ -500,6 +533,7 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
           open={showDetailDialog}
           onOpenChange={setShowDetailDialog}
           tourMemberId={selectedTourMember}
+          status={status}
         />
       )}
     </>

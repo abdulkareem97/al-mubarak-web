@@ -41,6 +41,8 @@ import { TourMember, Payment } from "@/types/tour-member";
 import PaymentFormDialog from "./PaymenetForm";
 import { tourMemberApi } from "@/lib/api/tour-memeber";
 import { useQuery } from "@tanstack/react-query";
+import TourBillPrint from "./PaymentPrint";
+import api from "@/lib/api";
 
 // Payment Status Badge Component
 const PaymentStatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -76,12 +78,14 @@ interface TourMemberDetailDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tourMemberId: string;
+  status?: string;
 }
 
 const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
   open,
   onOpenChange,
   tourMemberId,
+  status = "BOOKED",
 }) => {
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>();
@@ -123,14 +127,25 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
           </DialogHeader>
 
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList
+              className={`grid w-full ${
+                status === "BOOKED" ? "grid-cols-3" : "grid-cols-2"
+              }`}
+            >
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="members">Members</TabsTrigger>
-              <TabsTrigger value="payments">Payments</TabsTrigger>
+              {status === "BOOKED" && (
+                <TabsTrigger value="payments">Payments</TabsTrigger>
+              )}
+              {/* <TabsTrigger value="print-bill">print bill</TabsTrigger> */}
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div
+                className={`grid grid-cols-1 ${
+                  status === "BOOKED" && "md:grid-cols-2"
+                } gap-6`}
+              >
                 {/* Tour Package Info */}
                 <Card>
                   <CardHeader>
@@ -180,60 +195,62 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                 </Card>
 
                 {/* Payment Status */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Payment Status</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex justify-between">
-                      <span>Payment Type:</span>
-                      <Badge
-                        variant={
-                          tourMember.paymentType === "ONE_TIME"
-                            ? "default"
-                            : "secondary"
-                        }
-                      >
-                        {tourMember.paymentType}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Payment Status:</span>
-                      <PaymentStatusBadge status={tourMember.paymentStatus} />
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between">
-                      <span>Total Paid:</span>
-                      <span className="font-mono text-green-600">
-                        ₹{totalPaid.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Remaining:</span>
-                      <span
-                        className={cn(
-                          "font-mono",
-                          remainingAmount > 0
-                            ? "text-red-600"
-                            : "text-green-600"
-                        )}
-                      >
-                        ₹{remainingAmount.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                        style={{
-                          width: `${Math.min(
-                            (totalPaid / tourMember.totalCost) * 100,
-                            100
-                          )}%`,
-                        }}
-                      ></div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {status === "BOOKED" && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Payment Status</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span>Payment Type:</span>
+                        <Badge
+                          variant={
+                            tourMember.paymentType === "ONE_TIME"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {tourMember.paymentType}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Payment Status:</span>
+                        <PaymentStatusBadge status={tourMember.paymentStatus} />
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between">
+                        <span>Total Paid:</span>
+                        <span className="font-mono text-green-600">
+                          ₹{totalPaid.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Remaining:</span>
+                        <span
+                          className={cn(
+                            "font-mono",
+                            remainingAmount > 0
+                              ? "text-red-600"
+                              : "text-green-600"
+                          )}
+                        >
+                          ₹{remainingAmount.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                          style={{
+                            width: `${Math.min(
+                              (totalPaid / tourMember.totalCost) * 100,
+                              100
+                            )}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </TabsContent>
 
@@ -364,6 +381,11 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                 </div>
               )}
             </TabsContent>
+            {/* <TabsContent value="print-bill" className="space-y-4">
+              <div className="flex justify-between items-center">
+                <TourBillPrint tourMember={tourMember} />
+              </div>
+            </TabsContent> */}
           </Tabs>
         </DialogContent>
       </Dialog>

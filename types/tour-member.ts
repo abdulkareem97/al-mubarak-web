@@ -38,6 +38,7 @@ export interface TourMember {
   members?: Member[];
   tourPackage?: TourPackage;
   payments?: Payment[];
+  status?: string;
 }
 
 export interface TourMemberStats {

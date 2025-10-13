@@ -84,6 +84,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           href: "/dashboard/tour-member",
         },
         {
+          id: "enquiry-form",
+          name: "Enquiry Form",
+          icon: Compass,
+          href: "/dashboard/enquiry-form",
+        },
+        {
           id: "payment-remainders",
           name: "Payment Remainders",
           icon: Compass,
@@ -149,6 +155,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           name: "Tour Members",
           icon: Compass,
           href: "/dashboard/tour-member",
+        },
+        {
+          id: "enquiry-form",
+          name: "Enquiry Form",
+          icon: Compass,
+          href: "/dashboard/enquiry-form",
         },
         {
           id: "payment-remainders",

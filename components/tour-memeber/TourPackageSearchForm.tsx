@@ -105,7 +105,9 @@ export default function TourPackageSearchForm({
                 >
                   <div className="flex flex-col flex-wrap max-w-full">
                     <span className="font-medium ">{tour.packageName}</span>
-                    <span className="text-xs text-gray-500 ">{tour.desc}</span>
+                    <span className="text-xs text-gray-500 ">
+                      {tour.desc.slice(0, 50)}
+                    </span>
                   </div>
                 </SelectItem>
               ))}

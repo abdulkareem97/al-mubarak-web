@@ -177,7 +177,7 @@ export function TourPackageForm({
             <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
               <Calculator className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm font-medium">
-                Total Package Value: ${totalPrice.toFixed(2)}
+                Total Package Value: ₹{totalPrice.toFixed(2)}
               </span>
             </div>
 
@@ -199,7 +199,8 @@ export function TourPackageForm({
                   <FormControl>
                     <Textarea
                       placeholder="Enter tour package description..."
-                      rows={4}
+                      rows={8}
+                      className="h-40"
                       {...field}
                     />
                   </FormControl>

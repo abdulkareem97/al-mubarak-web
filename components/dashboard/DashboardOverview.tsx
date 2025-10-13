@@ -417,7 +417,7 @@ const DashboardOverview: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-2">
               Per person average pricing
             </p>
-            <div className="mt-3 pt-2 border-t">
+            {/* <div className="mt-3 pt-2 border-t">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Revenue/Booking:</span>
                 <span className="font-medium">
@@ -429,7 +429,7 @@ const DashboardOverview: React.FC = () => {
                     : 0}
                 </span>
               </div>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>

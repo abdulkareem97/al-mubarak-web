@@ -75,6 +75,8 @@ export function TourPackageView({ id }: TourPackageViewProps) {
 
   const totalValue = tourPackage.tourPrice * tourPackage.totalSeat;
 
+  console.log("tourPackage", tourPackage);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header */}
@@ -87,10 +89,10 @@ export function TourPackageView({ id }: TourPackageViewProps) {
           <p className="text-muted-foreground">Tour Package Details</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <Share2 className="h-4 w-4 mr-2" />
             Share
-          </Button>
+          </Button> */}
           <Button
             onClick={() => router.push(`/dashboard/tour-packages/${id}/edit`)}
           >
@@ -103,7 +105,7 @@ export function TourPackageView({ id }: TourPackageViewProps) {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Cover Photo */}
-          {tourPackage.coverPhoto && (
+          {tourPackage.coverPhoto && tourPackage.coverPhoto !== ".." && (
             <Card>
               <CardContent className="p-0">
                 <div className="relative aspect-video rounded-lg overflow-hidden">

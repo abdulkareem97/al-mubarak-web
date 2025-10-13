@@ -232,7 +232,7 @@ const CreateUserDialog = ({
     name: "",
     email: "",
     password: "",
-    role: "MEMBER",
+    role: "STAFF",
   });
 
   const createUser = useCreateUser();
@@ -241,7 +241,7 @@ const CreateUserDialog = ({
     e.preventDefault();
     await createUser.mutateAsync(formData);
     onOpenChange(false);
-    setFormData({ name: "", email: "", password: "", role: "MEMBER" });
+    setFormData({ name: "", email: "", password: "", role: "STAFF" });
   };
 
   return (
@@ -306,9 +306,9 @@ const CreateUserDialog = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ADMIN">Admin</SelectItem>
-                  <SelectItem value="MANAGER">Manager</SelectItem>
+                  {/* <SelectItem value="MANAGER">Manager</SelectItem> */}
                   <SelectItem value="STAFF">Staff</SelectItem>
-                  <SelectItem value="MEMBER">Member</SelectItem>
+                  {/* <SelectItem value="MEMBER">Member</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>

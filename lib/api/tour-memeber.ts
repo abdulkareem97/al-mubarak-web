@@ -6,8 +6,8 @@ import { Member } from '@/types/member';
 import { TourPackage } from '@/types/tour-package';
 
 export const tourMemberApi = {
-  getAll: (tourPackageId?: string): Promise<TourMember[]> => 
-    api.get('/tour-members', { params: { tourPackageId } }).then(res => res.data.data.data),
+  getAll: (tourPackageId?: string, status?: string): Promise<TourMember[]> => 
+    api.get('/tour-members', { params: { tourPackageId,status } }).then(res => res.data.data.data),
   
   getById: (id: string): Promise<TourMember> => 
     api.get(`/tour-members/${id}`).then(res => res.data.data),
