@@ -16,6 +16,7 @@ export interface Payment {
   paymentMethod: string;
   note?: string;
   status: 'PENDING' | 'PAID' | 'FAILED';
+   createdBy?: any;
 }
 
 export interface TourMember {
@@ -39,6 +40,7 @@ export interface TourMember {
   tourPackage?: TourPackage;
   payments?: Payment[];
   status?: string;
+  createdBy?: any;
 }
 
 export interface TourMemberStats {

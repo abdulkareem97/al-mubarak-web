@@ -355,9 +355,17 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                                   "dd MMM yyyy, hh:mm a"
                                 )}
                               </div>
+
                               {payment.note && (
                                 <div className="text-xs bg-muted p-2 rounded">
                                   {payment.note}
+                                </div>
+                              )}
+
+                              {payment.createdBy && (
+                                <div className="flex items-center gap-2">
+                                  <User className="h-3 w-3" />
+                                  Collect By {payment.createdBy.email}
                                 </div>
                               )}
                             </div>

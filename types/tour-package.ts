@@ -8,6 +8,7 @@ export interface TourPackage {
   desc: string;
   createdAt?: string;
   updatedAt?: string;
+  createdBy?: any;
 }
 
 export interface TourPackageFormData {

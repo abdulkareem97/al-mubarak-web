@@ -5,6 +5,7 @@ export interface Member {
   mobileNo: string;
   address: string;
   document: any; // JSON field for storing file information
+  createdBy: any;
 }
 
 export interface MemberFormData {

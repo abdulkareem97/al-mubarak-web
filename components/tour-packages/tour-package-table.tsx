@@ -220,6 +220,7 @@ export function TourPackageTable() {
                       <TableHead>Seats</TableHead>
                       <TableHead>Total Value</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Last Edited By</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -259,6 +260,7 @@ export function TourPackageTable() {
                         <TableCell>
                           <Badge variant="outline">Active</Badge>
                         </TableCell>
+                        <TableCell>{pkg.createdBy?.email}</TableCell>
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>

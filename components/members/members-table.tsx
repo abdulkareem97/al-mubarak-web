@@ -181,6 +181,17 @@ export function MembersTable() {
       },
     },
     {
+      accessorKey: "createdBy",
+      header: "Last Edited By",
+      cell: ({ row }) => (
+        <div className="flex items-start space-x-2">
+          <span className="max-w-xs truncate">
+            {(row.getValue("createdBy") as { email?: string })?.email ?? "N/A"}
+          </span>
+        </div>
+      ),
+    },
+    {
       id: "actions",
       cell: ({ row }) => {
         const member = row.original;
