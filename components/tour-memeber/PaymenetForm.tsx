@@ -1,5 +1,5 @@
 // File: /components/tour-members/PaymentForm.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -50,6 +50,7 @@ const PaymentFormDialog: React.FC<PaymentFormDialogProps> = ({
   tourMember,
   payment,
 }) => {
+  console.log("payment", payment);
   const queryClient = useQueryClient();
 
   const form = useForm<PaymentFormData>({
@@ -61,6 +62,17 @@ const PaymentFormDialog: React.FC<PaymentFormDialogProps> = ({
       status: payment?.status || "PAID",
     },
   });
+
+  useEffect(() => {
+    if (payment) {
+      form.reset({
+        amount: payment.amount,
+        paymentMethod: payment.paymentMethod,
+        note: payment.note,
+        status: payment.status,
+      });
+    }
+  }, [payment, form]);
 
   const addPayment = useMutation({
     mutationFn: (data: PaymentFormData) =>
@@ -84,6 +96,9 @@ const PaymentFormDialog: React.FC<PaymentFormDialogProps> = ({
     onSuccess: () => {
       toast.success("Payment updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["tourMembers"] });
+      queryClient.invalidateQueries({
+        queryKey: ["tourMemberById", tourMember.id],
+      });
       onOpenChange(false);
     },
     onError: () => {

@@ -1,5 +1,5 @@
 // File: /components/tour-members/TourMemberDetailDialog.tsx
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
 import { TourMember, Payment } from "@/types/tour-member";
 import PaymentFormDialog from "./PaymenetForm";
 import { tourMemberApi } from "@/lib/api/tour-memeber";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TourBillPrint from "./PaymentPrint";
 import api from "@/lib/api";
 
@@ -89,6 +89,7 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
 }) => {
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>();
+  const queryClient = useQueryClient();
 
   // Fetch tour member
   const {
@@ -100,6 +101,20 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
     queryFn: () => tourMemberApi.getById(tourMemberId),
     staleTime: 0,
   });
+
+  const deletePaymentMutation = useMutation({
+    mutationFn: (paymentId: string) =>
+      tourMemberApi.deletePayment(tourMemberId, paymentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["tourMemberById", tourMember.id],
+      });
+    },
+  });
+
+  const deletePayment = async (paymentId: string) => {
+    await deletePaymentMutation.mutateAsync(paymentId);
+  };
 
   console.log("tourMember", tourMember);
 
@@ -360,7 +375,10 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                                 <Edit className="h-4 w-4 mr-2" />
                                 Edit
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() => deletePayment(payment.id)}
+                              >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Delete
                               </DropdownMenuItem>
