@@ -7,9 +7,13 @@ import { tourMemberApi } from "@/lib/api/tour-memeber";
 
 interface TourBillPrintProps {
   tourMemberId: string;
+  paymentId?: string;
 }
 
-const TourBillPrint: React.FC<TourBillPrintProps> = ({ tourMemberId }) => {
+const TourBillPrint: React.FC<TourBillPrintProps> = ({
+  tourMemberId,
+  paymentId,
+}) => {
   const billRef = useRef<HTMLDivElement>(null);
 
   const {

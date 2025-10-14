@@ -34,6 +34,7 @@ import {
   XCircle,
   AlertCircle,
   Clock,
+  Printer,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,7 @@ import { tourMemberApi } from "@/lib/api/tour-memeber";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TourBillPrint from "./PaymentPrint";
 import api from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 // Payment Status Badge Component
 const PaymentStatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -90,6 +92,7 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // Fetch tour member
   const {
@@ -366,6 +369,16 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  router.push(
+                                    `/dashboard/tour-member/${tourMember.id}/print?paymentId=${payment.id}`
+                                  );
+                                }}
+                              >
+                                <Printer className="h-4 w-4 mr-2" />
+                                Print
+                              </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => {
                                   setSelectedPayment(payment);
