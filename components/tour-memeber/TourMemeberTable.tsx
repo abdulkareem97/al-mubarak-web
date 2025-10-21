@@ -65,6 +65,7 @@ import { TourMember } from "@/types/tour-member";
 import TourMemberDetailDialog from "./TourMemberDetailDialog";
 import { useRouter } from "next/navigation";
 import { stat } from "fs";
+import { useAuth } from "@/hooks/useAuth";
 
 // Payment Status Badge Component
 const PaymentStatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -123,6 +124,9 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
     queryFn: () => tourMemberApi.getAll(tourPackageId, status),
     staleTime: 0,
   });
+
+  const { user } = useAuth();
+  const isUserAdmin = user?.role === "ADMIN";
 
   // console.log("tourMembers", tourMembers);
 
@@ -211,18 +215,24 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
           </div>
         ),
       },
-      {
-        accessorKey: "createdBy",
-        header: "Last Edited By",
-        cell: ({ row }) => (
-          <div className="flex items-start space-x-2">
-            <span className="max-w-xs truncate">
-              {(row.getValue("createdBy") as { email?: string })?.email ??
-                "N/A"}
-            </span>
-          </div>
-        ),
-      },
+
+      ...(isUserAdmin
+        ? [
+            {
+              accessorKey: "createdBy",
+              header: "Last Edited By",
+              cell: ({ row }) => (
+                <div className="flex items-start space-x-2">
+                  <span className="max-w-xs truncate">
+                    {(row.getValue("createdBy") as { email?: string })?.email ??
+                      "N/A"}
+                  </span>
+                </div>
+              ),
+            },
+          ]
+        : []),
+
       {
         id: "actions",
         header: "Actions",
@@ -264,10 +274,6 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Download className="mr-2 h-4 w-4" />
-                      Export
-                    </DropdownMenuItem>
                   </>
                 ) : (
                   <>
@@ -278,21 +284,23 @@ const TourMemberTable: React.FC<TourMemberTableProps> = ({
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-red-600"
-                  onClick={() => {
-                    if (
-                      confirm(
-                        "Are you sure you want to delete this tour member?"
-                      )
-                    ) {
-                      deleteTourMember.mutate(tourMember.id);
-                    }
-                  }}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
+                {isUserAdmin && (
+                  <DropdownMenuItem
+                    className="text-red-600"
+                    onClick={() => {
+                      if (
+                        confirm(
+                          "Are you sure you want to delete this tour member?"
+                        )
+                      ) {
+                        deleteTourMember.mutate(tourMember.id);
+                      }
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           );

@@ -31,6 +31,7 @@ import {
   filterMembersBySearch,
 } from "@/lib/payment-utils";
 import { toast } from "sonner"; // Assuming you have sonner for toasts
+import { useAuth } from "@/hooks/useAuth";
 
 export default function PaymentRemindersPage() {
   const {
@@ -52,6 +53,9 @@ export default function PaymentRemindersPage() {
     error,
     refetch,
   } = usePaymentReminders(debouncedFilters);
+
+  const { user } = useAuth();
+  const isUserAdmin = user?.role === "ADMIN";
 
   const { data: tourPackages = [] } = useTourPackages();
 
@@ -163,71 +167,73 @@ export default function PaymentRemindersPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Members
-              </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalMembers}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.pendingMembers} pending, {stats.partialMembers} partial
-              </p>
-            </CardContent>
-          </Card>
+        {isUserAdmin && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Members
+                </CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalMembers}</div>
+                <p className="text-xs text-muted-foreground">
+                  {stats.pendingMembers} pending, {stats.partialMembers} partial
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Due Amount
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                ₹{stats.totalDue.toLocaleString()}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Avg: ₹{stats.avgDueAmount.toFixed(0)} per member
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Due Amount
+                </CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ₹{stats.totalDue.toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Avg: ₹{stats.avgDueAmount.toFixed(0)} per member
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Overdue Payments
-              </CardTitle>
-              <Clock className="h-4 w-4 text-destructive" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-destructive">
-                {stats.overdueMembers}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Require immediate attention
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Overdue Payments
+                </CardTitle>
+                <Clock className="h-4 w-4 text-destructive" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-destructive">
+                  {stats.overdueMembers}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Require immediate attention
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Selected</CardTitle>
-              <MessageSquare className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {selection.selectedCount}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Ready for bulk SMS
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Selected</CardTitle>
+                <MessageSquare className="h-4 w-4 text-blue-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">
+                  {selection.selectedCount}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Ready for bulk SMS
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Filters */}
         <PaymentReminderFilters

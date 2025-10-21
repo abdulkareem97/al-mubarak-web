@@ -66,6 +66,7 @@ import { Member } from "@/types/member";
 import { MemberFormDialog } from "./member-form-dialog";
 import { FileViewer } from "./file-viewer";
 import { membersApi } from "@/lib/api/member";
+import { useAuth } from "@/hooks/useAuth";
 
 export function MembersTable() {
   const [globalFilter, setGlobalFilter] = useState("");
@@ -87,7 +88,9 @@ export function MembersTable() {
       membersApi.getMembers(pagination.pageIndex + 1, pagination.pageSize),
   });
 
-  console.log("membersData", membersData);
+  // console.log("membersData", membersData);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
 
   const deleteMutation = useMutation({
     mutationFn: membersApi.deleteMember,
@@ -180,17 +183,22 @@ export function MembersTable() {
         );
       },
     },
-    {
-      accessorKey: "createdBy",
-      header: "Last Edited By",
-      cell: ({ row }) => (
-        <div className="flex items-start space-x-2">
-          <span className="max-w-xs truncate">
-            {(row.getValue("createdBy") as { email?: string })?.email ?? "N/A"}
-          </span>
-        </div>
-      ),
-    },
+    ...(isAdmin
+      ? [
+          {
+            accessorKey: "createdBy",
+            header: "Last Edited By",
+            cell: ({ row }) => (
+              <div className="flex items-start space-x-2">
+                <span className="max-w-xs truncate">
+                  {(row.getValue("createdBy") as { email?: string })?.email ??
+                    "N/A"}
+                </span>
+              </div>
+            ),
+          },
+        ]
+      : []),
     {
       id: "actions",
       cell: ({ row }) => {
@@ -213,16 +221,18 @@ export function MembersTable() {
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  setMemberToDelete(member);
-                  setShowDeleteDialog(true);
-                }}
-                className="text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
+              {isAdmin && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setMemberToDelete(member);
+                    setShowDeleteDialog(true);
+                  }}
+                  className="text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

@@ -24,6 +24,7 @@ import TourMemberForm from "../tour-memeber/TourMemeberForm";
 import { useState } from "react";
 import { TourMember } from "@/types/tour-member";
 import TourMemberTable from "../tour-memeber/TourMemeberTable";
+import { useAuth } from "@/hooks/useAuth";
 
 interface TourPackageViewProps {
   id: string;
@@ -48,6 +49,9 @@ export function TourPackageView({ id }: TourPackageViewProps) {
     setEditingTourMember(undefined);
     setShowForm(true);
   };
+
+  const { user } = useAuth();
+  const isUserAdmin = user?.role === "ADMIN";
 
   if (isLoading) {
     return (
@@ -88,18 +92,16 @@ export function TourPackageView({ id }: TourPackageViewProps) {
           <h1 className="text-2xl font-bold">{tourPackage.packageName}</h1>
           <p className="text-muted-foreground">Tour Package Details</p>
         </div>
-        <div className="flex gap-2">
-          {/* <Button variant="outline" size="sm">
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
-          </Button> */}
-          <Button
-            onClick={() => router.push(`/dashboard/tour-packages/${id}/edit`)}
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
-          </Button>
-        </div>
+        {isUserAdmin && (
+          <div className="flex gap-2">
+            <Button
+              onClick={() => router.push(`/dashboard/tour-packages/${id}/edit`)}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}

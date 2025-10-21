@@ -45,6 +45,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TourBillPrint from "./PaymentPrint";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 // Payment Status Badge Component
 const PaymentStatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -93,6 +94,9 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
   const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>();
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const { user } = useAuth();
+  const isUserAdmin = user?.role === "ADMIN";
 
   // Fetch tour member
   const {
@@ -362,7 +366,7 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                                 </div>
                               )}
 
-                              {payment.createdBy && (
+                              {payment.createdBy && isUserAdmin && (
                                 <div className="flex items-center gap-2">
                                   <User className="h-3 w-3" />
                                   Collect By {payment.createdBy.email}
@@ -387,22 +391,26 @@ const TourMemberDetailDialog: React.FC<TourMemberDetailDialogProps> = ({
                                 <Printer className="h-4 w-4 mr-2" />
                                 Print
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  setSelectedPayment(payment);
-                                  setShowPaymentDialog(true);
-                                }}
-                              >
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-red-600"
-                                onClick={() => deletePayment(payment.id)}
-                              >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Delete
-                              </DropdownMenuItem>
+                              {isUserAdmin && (
+                                <>
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setSelectedPayment(payment);
+                                      setShowPaymentDialog(true);
+                                    }}
+                                  >
+                                    <Edit className="h-4 w-4 mr-2" />
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="text-red-600"
+                                    onClick={() => deletePayment(payment.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </>
+                              )}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>

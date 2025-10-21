@@ -61,6 +61,8 @@ import {
 import { EnquiryForm, EnquiryFormStatus } from "@/types/enquiry";
 import { enquiriesApi } from "@/lib/api/enquiry";
 import { EnquiryFormDialog } from "./enquiry-form-dialog";
+import { useAuth } from "@/hooks/useAuth";
+import is from "zod/v4/locales/is.cjs";
 
 const getStatusBadge = (status: EnquiryFormStatus) => {
   switch (status) {
@@ -101,6 +103,8 @@ export function EnquiriesTable() {
   );
 
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const isUserAdmin = user?.role === "ADMIN";
 
   const {
     data: enquiriesData,
@@ -182,17 +186,22 @@ export function EnquiriesTable() {
         </div>
       ),
     },
-    {
-      accessorKey: "createdBy",
-      header: "Last Edited By",
-      cell: ({ row }) => (
-        <div className="flex items-start space-x-2">
-          <span className="max-w-xs truncate">
-            {(row.getValue("createdBy") as { email?: string })?.email ?? "N/A"}
-          </span>
-        </div>
-      ),
-    },
+    ...(isUserAdmin
+      ? [
+          {
+            accessorKey: "createdBy",
+            header: "Last Edited By",
+            cell: ({ row }) => (
+              <div className="flex items-start space-x-2">
+                <span className="max-w-xs truncate">
+                  {(row.getValue("createdBy") as { email?: string })?.email ??
+                    "N/A"}
+                </span>
+              </div>
+            ),
+          },
+        ]
+      : []),
     {
       id: "actions",
       cell: ({ row }) => {
@@ -253,16 +262,18 @@ export function EnquiriesTable() {
                 Mark as Not Interested
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setEnquiryToDelete(enquiry);
-                  setShowDeleteDialog(true);
-                }}
-                className="text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
+              {isUserAdmin && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEnquiryToDelete(enquiry);
+                    setShowDeleteDialog(true);
+                  }}
+                  className="text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -337,45 +348,47 @@ export function EnquiriesTable() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pending}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Booked</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.booked}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Not Interested
-            </CardTitle>
-            <XCircle className="h-4 w-4 text-destructive" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.notInterested}</div>
-          </CardContent>
-        </Card>
-      </div>
+      {isUserAdmin && (
+        <div className="grid gap-4 md:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.total}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Pending</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.pending}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Booked</CardTitle>
+              <CheckCircle className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.booked}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Not Interested
+              </CardTitle>
+              <XCircle className="h-4 w-4 text-destructive" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.notInterested}</div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Search */}
       <Card>

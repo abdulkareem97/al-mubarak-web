@@ -51,6 +51,7 @@ import { TourPackageFilters } from "./tour-package-filters";
 import { TourPackageExport } from "./tour-package-export";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface FilterState {
   search: string;
@@ -75,6 +76,10 @@ export function TourPackageTable() {
     sortBy: "createdAt",
     sortOrder: "desc",
   });
+
+  const { user } = useAuth();
+
+  const isUserAdmin = user?.role === "ADMIN";
 
   const limit = 10;
 
@@ -136,16 +141,18 @@ export function TourPackageTable() {
             Manage your tour packages and bookings
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2">
-          {/* Export Component */}
-          <TourPackageExport />
-          <Button
-            onClick={() => router.push("/dashboard/tour-packages/create")}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Package
-          </Button>
-        </div>
+        {isUserAdmin && (
+          <div className="flex flex-col sm:flex-row gap-2">
+            {/* Export Component */}
+            <TourPackageExport />
+            <Button
+              onClick={() => router.push("/dashboard/tour-packages/create")}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Package
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -220,7 +227,7 @@ export function TourPackageTable() {
                       <TableHead>Seats</TableHead>
                       <TableHead>Total Value</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Last Edited By</TableHead>
+                      {isUserAdmin && <TableHead>Last Edited By</TableHead>}
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -260,7 +267,9 @@ export function TourPackageTable() {
                         <TableCell>
                           <Badge variant="outline">Active</Badge>
                         </TableCell>
-                        <TableCell>{pkg.createdBy?.email}</TableCell>
+                        {isUserAdmin && (
+                          <TableCell>{pkg.createdBy?.email}</TableCell>
+                        )}
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -281,23 +290,27 @@ export function TourPackageTable() {
                                 <Eye className="mr-2 h-4 w-4" />
                                 View
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  router.push(
-                                    `/dashboard/tour-packages/${pkg.id}/edit`
-                                  )
-                                }
-                              >
-                                <Edit className="mr-2 h-4 w-4" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => setDeleteId(pkg.id)}
-                                className="text-red-600"
-                              >
-                                <Trash className="mr-2 h-4 w-4" />
-                                Delete
-                              </DropdownMenuItem>
+                              {isUserAdmin && (
+                                <>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      router.push(
+                                        `/dashboard/tour-packages/${pkg.id}/edit`
+                                      )
+                                    }
+                                  >
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setDeleteId(pkg.id)}
+                                    className="text-red-600"
+                                  >
+                                    <Trash className="mr-2 h-4 w-4" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </>
+                              )}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>

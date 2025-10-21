@@ -10,6 +10,7 @@ import TourMemberTable from "@/components/tour-memeber/TourMemeberTable";
 import TourMemberForm from "@/components/tour-memeber/TourMemeberForm";
 import { useQuery } from "@tanstack/react-query";
 import { tourMemberApi } from "@/lib/api/tour-memeber";
+import { useAuth } from "@/hooks/useAuth";
 
 const TourMemberManagement: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
@@ -36,6 +37,8 @@ const TourMemberManagement: React.FC = () => {
     setEditingTourMember(undefined);
   };
 
+  const { user } = useAuth();
+  const isUserAdmin = user?.role === "ADMIN";
   const { data: tourMembersStats, isLoading } = useQuery({
     queryKey: ["tour-members-stats"],
     queryFn: () => tourMemberApi.getTourMembersStats(null),
@@ -65,65 +68,71 @@ const TourMemberManagement: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-lg border">
-          <div className="flex items-center">
-            <div>
-              <p className="text-sm font-medium text-gray-600">
-                Total Bookings
-              </p>
-              <p className="text-2xl font-bold">
-                {tourMembersStats?.totalBookings}
-              </p>
+      {isUserAdmin && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white p-6 rounded-lg border">
+            <div className="flex items-center">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Bookings
+                </p>
+                <p className="text-2xl font-bold">
+                  {tourMembersStats?.totalBookings}
+                </p>
+              </div>
+              <Users className="ml-auto h-8 w-8 text-blue-600" />
             </div>
-            <Users className="ml-auto h-8 w-8 text-blue-600" />
           </div>
-        </div>
 
-        <div className="bg-white p-6 rounded-lg border">
-          <div className="flex items-center">
-            <div>
-              <p className="text-sm font-medium text-gray-600">
-                Pending Payments
-              </p>
-              <p className="text-2xl font-bold">
-                {tourMembersStats?.pendingPayments}
-              </p>
-            </div>
-            <div className="ml-auto h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
-              <span className="text-yellow-600">⏳</span>
+          <div className="bg-white p-6 rounded-lg border">
+            <div className="flex items-center">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Pending Payments
+                </p>
+                <p className="text-2xl font-bold">
+                  {tourMembersStats?.pendingPayments}
+                </p>
+              </div>
+              <div className="ml-auto h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                <span className="text-yellow-600">⏳</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white p-6 rounded-lg border">
-          <div className="flex items-center">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold">
-                ₹{tourMembersStats?.totalRevenue}
-              </p>
-            </div>
-            <div className="ml-auto h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-              <span className="text-green-600">₹</span>
+          <div className="bg-white p-6 rounded-lg border">
+            <div className="flex items-center">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Revenue
+                </p>
+                <p className="text-2xl font-bold">
+                  ₹{tourMembersStats?.totalRevenue}
+                </p>
+              </div>
+              <div className="ml-auto h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                <span className="text-green-600">₹</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white p-6 rounded-lg border">
-          <div className="flex items-center">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Active Tours</p>
-              <p className="text-2xl font-bold">
-                {tourMembersStats?.totalActiveTours}
-              </p>
-            </div>
-            <div className="ml-auto h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600">🏖️</span>
+          <div className="bg-white p-6 rounded-lg border">
+            <div className="flex items-center">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Active Tours
+                </p>
+                <p className="text-2xl font-bold">
+                  {tourMembersStats?.totalActiveTours}
+                </p>
+              </div>
+              <div className="ml-auto h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-blue-600">🏖️</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Table */}
       <TourMemberTable onEdit={handleEdit} />

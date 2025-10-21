@@ -23,6 +23,8 @@ import {
   Timer,
 } from "lucide-react";
 import api from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
+import logo from "@/public/images/al_mubarak.jpg";
 
 // Types for dashboard statistics
 interface DashboardStats {
@@ -179,6 +181,22 @@ const DashboardOverview: React.FC = () => {
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
     staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
   });
+
+  const { user } = useAuth();
+
+  if (user.role !== "ADMIN") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div>
+          <img
+            src={logo.src}
+            alt="Al-Mubarak Logo"
+            className="bg-cover h-52 w-52"
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
