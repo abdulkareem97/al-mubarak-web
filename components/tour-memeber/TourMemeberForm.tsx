@@ -93,7 +93,7 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
 
   const [showMemberDialog, setShowMemberDialog] = useState(false);
   const [discountType, setDiscountType] = useState<"percentage" | "amount">(
-    "percentage"
+    "amount"
   );
 
   const [selectedTourPackage, setSelectedTourPackage] =
@@ -419,12 +419,12 @@ const TourMemberForm: React.FC<TourMemberFormProps> = ({
                         }
                         className="flex gap-4"
                       >
-                        <div className="flex items-center space-x-2">
+                        {/* <div className="flex items-center space-x-2">
                           <RadioGroupItem value="percentage" id="percentage" />
                           <Label htmlFor="percentage" className="text-sm">
                             Percentage
                           </Label>
-                        </div>
+                        </div> */}
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="amount" id="amount" />
                           <Label htmlFor="amount" className="text-sm">

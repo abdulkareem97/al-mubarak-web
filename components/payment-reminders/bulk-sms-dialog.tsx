@@ -85,15 +85,15 @@ export function BulkSmsDialog({
       await bulkSmsMutation.mutateAsync(payload);
 
       // Log for now since function should be empty
-      console.log(
-        "Bulk SMS sent to:",
-        selectedMembers.map((member) => ({
-          name: member.members[0]?.name,
-          phone: member.members[0]?.mobileNo,
-          amount: calculateDueAmount(member),
-          tourPackage: member.tourPackage.packageName,
-        }))
-      );
+      // console.log(
+      //   "Bulk SMS sent to:",
+      //   selectedMembers.map((member) => ({
+      //     name: member.members[0]?.name,
+      //     phone: member.members[0]?.mobileNo,
+      //     amount: calculateDueAmount(member),
+      //     tourPackage: member.tourPackage.packageName,
+      //   }))
+      // );
 
       onClose();
       setMessage(DEFAULT_MESSAGE_TEMPLATES[0].message);
@@ -130,9 +130,8 @@ export function BulkSmsDialog({
         </DialogHeader>
 
         <div className="flex-1 overflow-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-            {/* Message Composition */}
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 h-full">
+            {/* <div className="space-y-4">
               <div>
                 <Label className="text-sm font-medium">Message Templates</Label>
                 <div className="grid grid-cols-1 gap-2 mt-2">
@@ -217,7 +216,7 @@ export function BulkSmsDialog({
                   </PopoverContent>
                 </Popover>
               </div>
-            </div>
+            </div> */}
 
             {/* Recipients Preview */}
             <div className="space-y-4">
@@ -249,7 +248,7 @@ export function BulkSmsDialog({
                 </div>
               </div>
 
-              <Separator />
+              {/* <Separator />
 
               <div>
                 <Label className="text-sm font-medium">Message Preview</Label>
@@ -280,7 +279,7 @@ export function BulkSmsDialog({
                     )}
                   </div>
                 </ScrollArea>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

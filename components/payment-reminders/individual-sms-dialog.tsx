@@ -35,7 +35,7 @@ export function IndividualSmsDialog({
   onClose,
   member,
 }: IndividualSmsDialogProps) {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("No message");
   const individualSmsMutation = useIndividualSms();
 
   const calculateDueAmount = (member: TourMember) => {
@@ -56,15 +56,15 @@ export function IndividualSmsDialog({
       });
 
       // Log for now since function should be empty
-      console.log("Individual SMS sent to:", {
-        name: member.members[0]?.name,
-        phone: member.members[0]?.mobileNo,
-        message,
-        amount: calculateDueAmount(member),
-      });
+      // console.log("Individual SMS sent to:", {
+      //   name: member.members[0]?.name,
+      //   phone: member.members[0]?.mobileNo,
+      //   message,
+      //   amount: calculateDueAmount(member),
+      // });
 
       onClose();
-      setMessage("");
+      setMessage("No message");
     } catch (error) {
       console.error("Failed to send SMS:", error);
     }
@@ -123,9 +123,8 @@ export function IndividualSmsDialog({
             </div>
           </div>
 
-          <Separator />
+          {/* <Separator />
 
-          {/* Quick Templates */}
           <div>
             <Label className="text-sm font-medium">Quick Templates</Label>
             <div className="grid grid-cols-1 gap-2 mt-2">
@@ -147,7 +146,6 @@ export function IndividualSmsDialog({
 
           <Separator />
 
-          {/* Message Input */}
           <div>
             <Label htmlFor="sms-message" className="text-sm font-medium">
               Message Content
@@ -172,7 +170,6 @@ export function IndividualSmsDialog({
             </div>
           </div>
 
-          {/* Message Preview */}
           {message.trim() && (
             <div>
               <Label className="text-sm font-medium">Preview</Label>
@@ -183,7 +180,7 @@ export function IndividualSmsDialog({
                 <div className="text-sm">{message}</div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         <DialogFooter>
